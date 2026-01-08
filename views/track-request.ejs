@@ -1,0 +1,93 @@
+<%- include('partials/header') %>
+        <a href="/" class="btn btn-outline" style="width: auto; padding: 8px 15px; font-size: 14px; background-color: #ffffff;">الرجوع</a>
+    </nav>
+
+    <div class="card" style="max-width: 550px;">
+        <h2>متابعة الطلب</h2>
+        
+        <form id="trackForm">
+            <label for="trackInput">رقم الهوية أو الملف الطبي</label>
+            <input type="text" id="trackInput" placeholder="مثال: 1234567890" required>
+            
+            <div id="errorMsg" class="msg-error" style="margin-top: 15px; padding: 12px; border-radius: 10px; background: #ffebee; color: #c62828; display: none; text-align: center; font-weight: bold; font-size: 14px;"></div>
+            
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">عرض الحالة</button>
+        </form>
+
+        <div id="trackResult" class="result-card">
+            <div class="status-badge" id="resStatus">قيد المراجعة</div>
+            <div id="resInfo" style="font-size: 14px; color: var(--text); line-height: 1.6;">
+                </div>
+        </div>
+    </div>
+
+<script>
+    const STORAGE_KEY = "maeenak_requests_v1";
+
+    const trackForm = document.getElementById("trackForm");
+    const resultCard = document.getElementById("trackResult");
+    const errorMsg = document.getElementById("errorMsg");
+    const resInfo = document.getElementById("resInfo");
+    const resStatus = document.getElementById("resStatus");
+
+    trackForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        // إعادة ضبط الواجهة قبل البحث
+        resultCard.style.display = "none";
+        errorMsg.style.display = "none";
+
+        const key = document.getElementById("trackInput").value.trim();
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        const requests = JSON.parse(savedData) || [];
+
+        // البحث في البيانات (الأحدث أولاً)
+        const matchedRequests = requests.filter(function(r) {
+            return r.nationalId === key || r.medicalFile === key;
+        });
+
+        matchedRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        const latestRequest = matchedRequests[0];
+
+        if (!latestRequest) {
+            errorMsg.textContent = "عذراً، لم يتم العثور على أي طلب مرتبط بهذا الرقم.";
+            errorMsg.style.display = "block";
+            return;
+        }
+
+        // تحديث حالة الطلب
+        resStatus.textContent = "حالة الطلب: " + latestRequest.status;
+        
+        const addr = latestRequest.addressDetails || {};
+        
+        // بناء محتوى عرض البيانات
+        resInfo.innerHTML = `
+            <div style="border-bottom: 2px solid #f0f7ff; padding-bottom: 10px; margin-bottom: 15px;">
+                <p style="margin: 5px 0;"><b>رقم الطلب:</b> <span style="color: var(--blue-700); font-weight: 800;">${latestRequest.id}</span></p>
+                <p style="margin: 5px 0;"><b>اسم المريض:</b> ${latestRequest.fullName}</p>
+                <p style="margin: 5px 0;"><b>رقم الملف الطبي:</b> ${latestRequest.medicalFile}</p>
+                <p style="margin: 5px 0;"><b>رقم الهوية:</b> ${latestRequest.nationalId}</p>
+                <p style="margin: 5px 0;"><b>رقم الجوال:</b> ${latestRequest.phone}</p>
+                <p style="margin: 5px 0; font-size: 12px; color: var(--muted);"><b>تاريخ الطلب:</b> ${new Date(latestRequest.createdAt).toLocaleString('ar-SA')}</p>
+            </div>
+
+            <div style="background: #f9f9f9; padding: 12px; border-radius: 12px; border: 1px solid #eee;">
+                <p style="font-weight: bold; color: var(--blue-900); margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">تفاصيل العنوان الوطني:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
+                    <p style="margin: 0;"><b>العنوان المختصر:</b> ${addr.short || '-'}</p>
+                    <p style="margin: 0;"><b>المدينة:</b> ${addr.city || '-'}</p>
+                    <p style="margin: 0;"><b>الحي:</b> ${addr.district || '-'}</p>
+                    <p style="margin: 0;"><b>الشارع:</b> ${addr.street || '-'}</p>
+                    <p style="margin: 0;"><b>رقم المبنى:</b> ${addr.building || '-'}</p>
+                    <p style="margin: 0;"><b>الرقم الفرعي:</b> ${addr.extra || '-'}</p>
+                    <p style="margin: 0;"><b>الرمز البريدي:</b> ${addr.postal || '-'}</p>
+                </div>
+            </div>
+        `;
+
+        // إظهار النتائج
+        resultCard.style.display = "block";
+    });
+</script>
+<%- include('partials/footer') %>
