@@ -1,16 +1,22 @@
 <%- include('partials/header') %>
+        <a href="/" class="btn btn-outline" style="width: auto; padding: 8px 15px; font-size: 14px; background-color: #ffffff;">الرئيسية</a>
+    </nav>
 
+    <div class="card" style="max-width: 450px; min-height: 500px; display: flex; flex-direction: column; overflow: hidden; padding: 0;">
+        <div class="hero">
+            <h2>منصة معينك لتسهيل طلب وصرف الأدوية</h2>
+            <p>قدّم طلبك بكل سهولة وبدون تسجيل دخول.</p>
+            <p>تابع حالة طلبك في أي وقت باستخدام رقم الهوية أو رقم الملف الطبي.</p>
+        </div>
 
-<div class="jumbotron centered">
-  <div class="container">
-    <i class="fas fa-key fa-6x"></i>
-    <h1 class="display-3">Secrets</h1>
-    <p class="lead">Don't keep your secrets, share them anonymously!</p>
-    <hr>
-    <a class="btn btn-light btn-lg" href="/register" role="button">Register</a>
-    <a class="btn btn-dark btn-lg" href="/login" role="button">Login</a>
-
-  </div>
-</div>
+        <div class="hero-footer" style="padding: 30px 20px; display: flex; flex-direction: column; gap: 15px;">
+            <a href="/register" style="text-decoration: none;">
+                <button class="btn btn-primary">إنشاء طلب جديد</button>
+            </a>
+            <a href="/secrets" style="text-decoration: none;">
+                <button class="btn btn-outline" style="background-color: #ffffff;">متابعة طلب</button>
+            </a>
+        </div>
+    </div>
 
 <%- include('partials/footer') %>
