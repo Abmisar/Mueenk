@@ -1,0 +1,126 @@
+<%- include('partials/header') %>
+        <a href="/" class="btn btn-outline" style="width: auto; padding: 8px 15px; font-size: 14px; background-color: #ffffff;">الرجوع</a>
+    </nav>
+
+    <div class="card" style="max-width: 650px;">
+        <h2>إنشاء طلب دواء</h2>
+        
+        <form id="requestForm" autocomplete="on">
+            <label for="fullName">الاسم الكامل</label>
+            <input type="text" id="fullName" placeholder="مثال: محمد أحمد" required>
+
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="medicalFile">رقم الملف الطبي</label>
+                    <input type="text" id="medicalFile" placeholder="12345" required>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="nationalId">رقم الهوية</label>
+                    <input type="text" id="nationalId" maxlength="10" placeholder="10 أرقام" required>
+                </div>
+            </div>
+
+            <label for="phone">رقم الجوال</label>
+            <input type="text" id="phone" placeholder="05xxxxxxxx" required>
+
+            <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+            <h3 style="color: var(--blue-900); font-size: 18px; margin-bottom: 15px;">تفاصيل العنوان الوطني</h3>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 13px;">العنوان المختصر</label>
+                    <input type="text" id="shortAddress" placeholder="GR76" required>
+                </div>
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 13px;">المدينة</label>
+                    <input type="text" id="city" placeholder="جدة" required>
+                </div>
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 13px;">الحي</label>
+                    <input type="text" id="district" placeholder="الروضة" required>
+                </div>
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 13px;">الشارع</label>
+                    <input type="text" id="street" placeholder="الملك فهد" required>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 13px;">رقم المبنى</label>
+                    <input type="text" id="buildingNum" placeholder="1234" required>
+                </div>
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 13px;">الرقم الفرعي</label>
+                    <input type="text" id="extraNum" placeholder="5678">
+                </div>
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 13px;">الرمز البريدي</label>
+                    <input type="text" id="postalCode" placeholder="12345">
+                </div>
+            </div>
+
+            <div id="statusMsg" class="msg" style="margin-top: 20px; padding: 15px; border-radius: 12px; display: none; font-weight: 700; text-align: center; font-size: 15px;"></div>
+
+            <div class="actions" style="margin-top: 22px; display: flex; gap: 12px;">
+                <button type="submit" class="btn btn-primary">إرسال الطلب</button>
+                <a href="/" class="btn btn-outline" style="background-color: #ffffff;">إلغاء</a>
+            </div>
+        </form>
+    </div>
+
+<script>
+    const STORAGE_KEY = "maeenak_requests_v1";
+    const form = document.getElementById("requestForm");
+    const statusMsg = document.getElementById("statusMsg");
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        const nid = document.getElementById("nationalId").value.trim();
+        const ph = document.getElementById("phone").value.trim();
+
+        // التحقق من صحة البيانات الأساسية
+        if (!/^\d{10}$/.test(nid)) {
+            alert("خطأ: رقم الهوية يجب أن يتكون من 10 أرقام.");
+            return;
+        }
+        if (!/^05\d{8}$/.test(ph)) {
+            alert("خطأ: رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام.");
+            return;
+        }
+
+        const newRequest = {
+            id: "REQ-" + Math.random().toString(36).substring(2, 8).toUpperCase(),
+            fullName: document.getElementById("fullName").value.trim(),
+            medicalFile: document.getElementById("medicalFile").value.trim(),
+            nationalId: nid,
+            phone: ph,
+            addressDetails: {
+                short: document.getElementById("shortAddress").value.trim(),
+                city: document.getElementById("city").value.trim(),
+                district: document.getElementById("district").value.trim(),
+                street: document.getElementById("street").value.trim(),
+                building: document.getElementById("buildingNum").value.trim(),
+                extra: document.getElementById("extraNum").value.trim(),
+                postal: document.getElementById("postalCode").value.trim()
+            },
+            status: "قيد المراجعة",
+            createdAt: new Date().toISOString()
+        };
+
+        const existingRequests = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        existingRequests.push(newRequest);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(existingRequests));
+
+        statusMsg.textContent = "تم إرسال طلبك بنجاح ✅ رقم الطلب: " + newRequest.id;
+        statusMsg.style.backgroundColor = "#e8f5e9";
+        statusMsg.style.color = "#2e7d32";
+        statusMsg.style.border = "1px solid #c8e6c9";
+        statusMsg.style.display = "block";
+        
+        form.reset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+<%- include('partials/footer') %>
