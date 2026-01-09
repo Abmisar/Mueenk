@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>معينك | Mueenk</title>
-    
     <link rel="stylesheet" href="/css/styles.css">
-
     <script>
         if (sessionStorage.getItem('splashShown')) {
             document.write('<style>#loading-screen { display: none !important; }</style>');
@@ -14,17 +12,21 @@
     </script>
 </head>
 <body>
-
     <div id="loading-screen">
         <div class="loading-content">
-            <img src="LOGO_MUEENK2.png" alt="لوقو معينك" class="loading-logo">
+            <img src="LOGO_MUEENK2.png" alt="Logo" class="loading-logo">
             <div class="loading-text">مُعينك</div>
         </div>
     </div>
 
-    <div class="app">
+    <header class="hero-section">
         <nav class="navbar">
-            <div class="nav-brand">
+            <a href="/" class="nav-brand">
                 <img src="LOGO_MUEENK2.png" alt="Logo">
-                <span>معينك</span>
-            </div>
+                <span>مُعينك</span>
+            </a>
+            <a href="/" class="btn btn-outline" style="font-size: 14px; border-radius: 15px;">الرئيسية</a>
+        </nav>
+    </header>
+
+    <main class="app">
