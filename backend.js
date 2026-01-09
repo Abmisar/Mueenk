@@ -41,6 +41,15 @@ app.get("/create-request", (req, res) => {
 });
 
 
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
+
+
+
+
+
 // app.post("/register", async (req, res) => {
 //   const username = req.body.username;
 //   const password = req.body.password;
@@ -102,7 +111,3 @@ app.get("/create-request", (req, res) => {
 // }
 
 // });
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
