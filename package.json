@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Abmisar/Mueenk#readme",
   "description": "",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^4.21.2",
     "pg": "^8.13.1"
   }
