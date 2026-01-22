@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+
+<div class="main-card">
+    <h2>إنشاء طلب دواء جديد</h2>
+    <p>يرجى تعبئة البيانات التالية بدقة لضمان وصول الدواء إليكم.</p>
+    
+    <% if (locals.errorMsg) { %>
+        <div style="background: #fff1f2; color: #e11d48; padding: 20px; border-radius: 20px; border: 1px solid #fda4af; text-align: center; margin-bottom: 25px; animation: shake 0.5s;">
+            <p style="font-weight: 800; margin-bottom: 10px;">🛑 تنبيه نظام مُعينك</p>
+            <p style="font-size: 14px; margin-bottom: 15px;"><%= errorMsg %></p>
+            <a href="/track-request" class="btn-primary" style="padding: 10px 20px; font-size: 14px; display: inline-block; width: auto; margin-top: 0;">تتبع طلبك الحالي</a>
+        </div>
+        
+        <style>
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        </style>
+    <% } %>
+
+    <form id="requestForm" action="/create-request" method="POST">
+        <label for="fullName">الاسم الكامل</label>
+        <input type="text" id="fullName" name="fullName" placeholder="مثال: محمد أحمد" required>
+
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <label for="medicalFile">رقم الملف الطبي</label>
+                <input type="text" id="medicalFile" name="medicalFile" placeholder="12345" required>
+            </div>
+            
+            <div style="flex: 1; min-width: 200px;">
+                <label for="nationalId">رقم الهوية</label>
+                <input type="text" id="nationalId" name="nationalId" maxlength="10" placeholder="10 أرقام" required>
+            </div>
+        </div>
+
+        <label for="phone">رقم الجوال</label>
+        <input type="text" id="phone" name="phone" placeholder="05xxxxxxxx" required>
+
+        <div style="margin: 30px 0; padding: 20px; border: 1px dashed #cbd5e1; border-radius: 20px; background: rgba(248, 250, 252, 0.5);">
+            <h3 style="color: var(--blue-900); font-size: 18px; margin-top: 0; margin-bottom: 15px;">تفاصيل العنوان الوطني</h3>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                <div style="flex: 1; min-width: 120px;"><label style="font-size: 13px;">العنوان المختصر</label><input type="text" name="shortAddress" placeholder="JDAA0000" required></div>
+                <div style="flex: 1; min-width: 120px;"><label style="font-size: 13px;">المدينة</label><input type="text" name="city" placeholder="جدة" required></div>
+                <div style="flex: 1; min-width: 120px;"><label style="font-size: 13px;">الحي</label><input type="text" name="district" placeholder="الروضة" required></div>
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 120px;"><label style="font-size: 13px;">الشارع</label><input type="text" name="street" placeholder="الملك فهد" required></div>
+                <div style="flex: 1; min-width: 120px;"><label style="font-size: 13px;">رقم المبنى</label><input type="text" name="buildingNum" placeholder="1234" required></div>
+                <div style="flex: 1; min-width: 120px;"><label style="font-size: 13px;">الرقم الفرعي</label><input type="text" name="extraNum" placeholder="5678"></div>
+                <div style="flex: 1; min-width: 120px;"><label style="font-size: 13px;">الرمز البريدي</label><input type="text" name="postalCode" placeholder="12345"></div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label for="patientNotes" style="display: block; margin-bottom: 8px;">ملاحظات إضافية (اختياري)</label>
+            <textarea id="patientNotes" name="patientNotes" rows="3" placeholder="اكتب أي ملاحظات تود إبلاغ الصيدلية بها..." style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-family: 'Tajawal', sans-serif; resize: vertical;"></textarea>
+        </div>
+
+        <div id="validationAlert" style="display: none; background: #fff1f2; color: #e11d48; padding: 12px; border-radius: 12px; border: 1px solid #fda4af; margin-bottom: 15px; text-align: center; font-weight: bold;"></div>
+
+        <button type="submit" class="btn-primary" style="margin-top: 10px;">إرسال الطلب الآن</button>
+    </form>
+</div>
+
+<script>
+    const form = document.getElementById("requestForm");
+    const validationAlert = document.getElementById("validationAlert");
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        validationAlert.style.display = "none";
+
+        const nid = document.getElementById("nationalId").value.trim();
+        const ph = document.getElementById("phone").value.trim();
+
+        if (!/^\d{10}$/.test(nid)) {
+            validationAlert.textContent = "⚠️ رقم الهوية يجب أن يتكون من 10 أرقام";
+            validationAlert.style.display = "block";
+            return;
+        }
+
+        if (!/^05\d{8}$/.test(ph)) {
+            validationAlert.textContent = "⚠️ رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام";
+            validationAlert.style.display = "block";
+            return;
+        }
+
+        form.submit();
+    });
+</script>
+
+<%- include('partials/footer') %>

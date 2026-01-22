@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+
+<div class="main-card" style="max-width: 1000px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="margin: 0;">قائمة الطلبات الواردة</h2>
+        <span style="background: #e0f2fe; color: #0369a1; padding: 5px 15px; border-radius: 50px; font-weight: bold; font-size: 14px;">
+            <%= requests.length %> طلبات إجمالاً
+        </span>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: right;">
+            <thead>
+                <tr style="border-bottom: 2px solid #f1f5f9; color: var(--blue-900);">
+                    <th style="padding: 15px;">رقم الطلب</th>
+                    <th style="padding: 15px;">المريض</th>
+                    <th style="padding: 15px;">التاريخ</th>
+                    <th style="padding: 15px;">الحالة</th>
+                    <th style="padding: 15px;">الإجراء</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (requests.length > 0) { %>
+                    <% requests.forEach(req => { %>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 15px; font-weight: bold; color: var(--blue-600);"><%= req.req_id %></td>
+                            <td style="padding: 15px;"><%= req.full_name %><br><small style="color: var(--muted);">ملف: <%= req.medical_file %></small></td>
+                            <td style="padding: 15px; font-size: 13px;"><%= new Date(req.created_at).toLocaleDateString('ar-SA') %></td>
+                            <td style="padding: 15px;">
+                                <span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: bold;">
+                                    <%= req.status %>
+                                </span>
+                            </td>
+                            <td style="padding: 15px;">
+                                <a href="/request-details/<%= req.req_id %>" class="btn-primary" style="padding: 8px 15px; font-size: 13px; width: auto; display: inline-block;">عرض التفاصيل</a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" style="padding: 40px; text-align: center; color: var(--muted);">لا توجد طلبات واردة حالياً.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

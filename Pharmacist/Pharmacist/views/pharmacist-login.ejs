@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+
+<div class="main-card">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <div style="font-size: 50px;"></div>
+        <h2 style="margin-top: 10px;">دخول الصيدلي</h2>
+        <p>يرجى إدخال بيانات الاعتماد للوصول للنظام</p>
+    </div>
+
+    <% if (locals.errorMsg) { %>
+        <div style="background: #fff1f2; color: #e11d48; padding: 12px; border-radius: 12px; border: 1px solid #fda4af; margin-bottom: 20px; text-align: center; font-weight: bold;">
+            <%= errorMsg %>
+        </div>
+    <% } %>
+
+    <form action="/ph-login" method="POST">
+        <label>اسم المستخدم</label>
+        <input type="text" name="username" placeholder="اسم المستخدم" required>
+
+        <label>كلمة المرور</label>
+        <input type="password" name="password" placeholder="••••••••" required>
+
+        <button type="submit" class="btn-primary">تسجيل الدخول</button>
+    </form>
+</div>
+
+<%- include('partials/footer') %>

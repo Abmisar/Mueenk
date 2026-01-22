@@ -1,0 +1,91 @@
+<%- include('partials/header') %>
+
+<div class="main-card" style="max-width: 800px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="color: var(--blue-900);">تتبع حالة الطلبات</h2>
+        <p>أدخل رقم الهوية أو رقم الطلب لمتابعة حالة صرف الدواء</p>
+    </div>
+
+    <form action="/track-request" method="POST" style="display: flex; gap: 10px; margin-bottom: 40px;">
+        <input type="text" name="searchQuery" placeholder="رقم الهوية أو رقم الطلب (REQ-XXXX)..." required style="margin-bottom: 0;">
+        <button type="submit" class="btn-primary" style="width: auto; margin-top: 0; padding: 0 30px;">تتبع</button>
+    </form>
+
+    <% if (locals.requestsList && requestsList.length > 0) { %>
+        <div id="resultArea" style="animation: fadeIn 0.5s;">
+            <h3 style="color: var(--blue-900); margin-bottom: 20px; font-size: 16px;">تم العثور على (<%= requestsList.length %>) طلبات مرتبطة بسجلك:</h3>
+            
+            <% requestsList.forEach((requestData, index) => { %>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 25px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 30px; position: relative; overflow: hidden;">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px;">
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <h3 style="margin: 0; color: var(--blue-900); font-size: 18px;">الطلب رقم: <%= requestsList.length - index %></h3>
+                            <span style="color: #64748b; font-size: 12px; font-weight: bold;">معرف النظام: <%= requestData.req_id %></span>
+                        </div>
+                        <% 
+                            let statusColor = "#3b82f6"; 
+                            if (requestData.status === 'ملغى') statusColor = "#ef4444";
+                            if (['توصيل عن طريق سبل', 'استلام عن طريق وصفتي', 'استلام من المستشفى'].includes(requestData.status)) statusColor = "#10b981";
+                        %>
+                        <span style="background: <%= statusColor %>; color: white; padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: bold;">
+                            <%= requestData.status %>
+                        </span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 30px;">
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 15px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">اسم المريض</p>
+                            <p style="margin: 0; font-weight: 800; color: var(--blue-900); font-size: 15px;"><%= requestData.full_name %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 15px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">رقم الملف</p>
+                            <p style="margin: 0; font-weight: 800; color: var(--blue-900);"><%= requestData.medical_file %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 15px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">رقم الهوية</p>
+                            <p style="margin: 0; font-weight: 800; color: var(--blue-900);"><%= requestData.national_id %></p>
+                        </div>
+                    </div>
+
+                    <% if (requestData.pharmacist_notes) { %>
+                        <div style="padding: 25px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 20px; border-right: 6px solid #0369a1;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                                <span style="font-size: 24px;">💬</span>
+                                <h4 style="margin: 0; color: #0369a1; font-size: 18px; font-weight: 700;">الإجراء المتخذ وملاحظة الصيدلية:</h4>
+                            </div>
+                            
+                            <p style="color: #075985; font-size: 18px; line-height: 1.8; margin: 0 0 20px 0; font-weight: 500; background: white; padding: 15px; border-radius: 12px; border: 1px dashed #bae6fd;">
+                                <%= requestData.pharmacist_notes %>
+                            </p>
+
+                            <div style="display: flex; justify-content: flex-start; align-items: center; border-top: 1px solid #e0f2fe; padding-top: 15px;">
+                                <span style="font-size: 14px; color: #0c4a6e; font-weight: bold; background: #e0f2fe; padding: 5px 15px; border-radius: 8px;">
+                                    📍 طريقة الصرف: <span style="color: #0369a1; font-size: 16px;"><%= requestData.status %></span>
+                                </span>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div style="text-align: center; padding: 25px; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 20px; color: #92400e; font-size: 16px; font-weight: 500;">
+                            ⏳ هذا الطلب قيد المراجعة حالياً، سيتم تحديث الإجراء هنا فور معالجته.
+                        </div>
+                    <% } %>
+
+                </div>
+            <% }) %>
+        </div>
+    <% } else if (locals.errorMsg) { %>
+        <div style="background: #fff1f2; color: #e11d48; padding: 15px; border-radius: 15px; text-align: center; font-weight: bold; margin-top: 20px;">
+            <%= errorMsg %>
+        </div>
+    <% } %>
+
+    <% if (locals.successMsg) { %>
+        <div style="background: #dcfce7; color: #166534; padding: 25px; border-radius: 20px; text-align: center; margin-top: 20px; border: 1px solid #bbf7d0;">
+            <h3 style="margin-top: 0; color: #166534;">تم إرسال طلبك بنجاح! 🎉</h3>
+            <p>رقم طلبك هو: <strong style="font-size: 24px; color: #15803d;"><%= successMsg %></strong></p>
+            <p style="font-size: 14px; opacity: 0.8;">يرجى تتبع حالة طلبك باستخدام الرقم أعلاه أو رقم الهوية.</p>
+        </div>
+    <% } %>
+</div>
+<%- include('partials/footer') %>

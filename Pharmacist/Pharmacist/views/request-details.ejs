@@ -1,0 +1,194 @@
+<%- include('partials/header') %>
+
+<%
+  const statusMap = {
+    PENDING: "قيد المراجعة",
+    DELIVERED_SPL: "توصيل عن طريق سبل",
+    RECEIVED_WASFTI: "استلام عن طريق وصفتي",
+    CANCELLED: "ملغى",
+    PRESCRIPTION_EXPIRED: "الوصفة منتهية"
+  };
+  const statusLabel = statusMap[request.status] || request.status;
+%>
+
+<div class="main-card" style="max-width: 900px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px;">
+        <h2 style="margin: 0; color: var(--blue-900);">تفاصيل الطلب: <%= request.req_id %></h2>
+        <span id="currentStatusDisplay" style="background: var(--blue-900); color: white; padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 14px;">
+            <%= statusLabel %>
+        </span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+        <div style="background: #f8fafc; padding: 15px; border-radius: 15px; border: 1px solid #e2e8f0;">
+            <p style="margin: 0 0 5px; color: #64748b; font-size: 12px;">اسم المريض</p>
+            <p style="margin: 0; font-weight: 800;"><%= request.full_name %></p>
+        </div>
+        <div style="background: #f8fafc; padding: 15px; border-radius: 15px; border: 1px solid #e2e8f0;">
+            <p style="margin: 0 0 5px; color: #64748b; font-size: 12px;">رقم الملف الطبي</p>
+            <p style="margin: 0; font-weight: 800;"><%= request.medical_file %></p>
+        </div>
+        <div style="background: #f8fafc; padding: 15px; border-radius: 15px; border: 1px solid #e2e8f0;">
+            <p style="margin: 0 0 5px; color: #64748b; font-size: 12px;">رقم الهوية</p>
+            <p style="margin: 0; font-weight: 800;"><%= request.national_id %></p>
+        </div>
+        <div style="background: #f8fafc; padding: 15px; border-radius: 15px; border: 1px solid #e2e8f0;">
+            <p style="margin: 0 0 5px; color: #64748b; font-size: 12px;">رقم الجوال</p>
+            <p style="margin: 0; font-weight: 800;"><%= request.phone %></p>
+        </div>
+    </div>
+
+    <h3 style="color: var(--blue-900); font-size: 16px; margin-bottom: 15px;">📍 تفاصيل العنوان الوطني</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 25px;">
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">العنوان المختصر</p>
+            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= request.short_address %></p>
+        </div>
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">المدينة</p>
+            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= request.city %></p>
+        </div>
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">الحي</p>
+            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= request.district %></p>
+        </div>
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">الشارع</p>
+            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= request.street %></p>
+        </div>
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">رقم المبنى</p>
+            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= request.building_num %></p>
+        </div>
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">الرمز البريدي</p>
+            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= request.postal_code %></p>
+        </div>
+    </div>
+
+    <% if (request.patient_notes) { %>
+        <div style="margin-bottom: 35px; padding: 20px; background: #fff7ed; border: 1px solid #ffedd5; border-radius: 20px; border-right: 6px solid #ea580c;">
+            <h4 style="margin: 0 0 10px 0; color: #9a3412; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                📝 ملاحظة من المريض:
+            </h4>
+            <p style="margin: 0; color: #7c2d12; font-size: 15px; line-height: 1.6; font-weight: 500;">
+                <%= request.patient_notes %>
+            </p>
+        </div>
+    <% } else { %>
+        <div style="margin-bottom: 35px; padding: 15px; background: #f8fafc; border: 1px dashed #e2e8f0; border-radius: 15px; color: #94a3b8; text-align: center; font-size: 14px;">
+            لا توجد ملاحظات إضافية من المريض.
+        </div>
+    <% } %>
+
+    <h3 style="color: var(--blue-900); font-size: 18px; margin-bottom: 20px;"> اختر طريقة الصرف:</h3>
+
+    <div class="btn-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+        <button type="button" onclick="selectStatus(this, 'DELIVERED_SPL')" class="btn-action-select"
+          style="border: 2px solid #3b82f6; background: transparent; color: #3b82f6; padding: 15px; border-radius: 15px; cursor: pointer; font-weight: bold;">
+          📦 توصيل عن طريق سبل
+        </button>
+
+        <button type="button" onclick="selectStatus(this, 'RECEIVED_WASFTI')" class="btn-action-select"
+          style="border: 2px solid #f59e0b; background: transparent; color: #f59e0b; padding: 15px; border-radius: 15px; cursor: pointer; font-weight: bold;">
+          🔗 استلام عن طريق وصفتي
+        </button>
+
+        <button type="button" onclick="selectStatus(this, 'CANCELLED')" class="btn-action-select"
+          style="border: 2px solid #ef4444; background: transparent; color: #ef4444; padding: 15px; border-radius: 15px; cursor: pointer; font-weight: bold;">
+          ❌ إلغاء الطلب
+        </button>
+
+        <button type="button" onclick="selectStatus(this, 'PRESCRIPTION_EXPIRED')" class="btn-action-select"
+          style="border: 2px solid #64748b; background: transparent; color: #64748b; padding: 15px; border-radius: 15px; cursor: pointer; font-weight: bold;">
+          🚫 الوصفة منتهية
+        </button>
+    </div>
+
+    <h3 style="color: var(--blue-900); font-size: 18px; margin-bottom: 20px;"> بيانات الصيدلي والملاحظات: </h3>
+
+    <div style="background: #f8fafc; padding: 25px; border-radius: 25px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+
+        <div id="validationWarning" style="display: none; background: #fff1f2; color: #e11d48; padding: 15px; border-radius: 12px; border: 1px solid #fda4af; margin-bottom: 20px; text-align: center; font-weight: bold; animation: shake 0.5s;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; color: var(--blue-900); font-weight: bold;">اسم الصيدلي المسؤول: <span style="color: #ef4444;">*</span></label>
+            <input type="text" id="ph_name" placeholder="أدخل اسمك هنا..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; margin-bottom: 8px; color: var(--blue-900); font-weight: bold;">ملاحظات للعميل (رقم التتبع / سبب الإلغاء):</label>
+            <textarea id="ph_notes" rows="3" placeholder="اكتب الملاحظات التي سيراها المريض..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-family: inherit;"></textarea>
+        </div>
+
+        <button type="button" onclick="validateAndSubmit()" class="btn-primary" style="width: 100%; background: var(--blue-900); padding: 18px; font-size: 16px; border-radius: 15px;">
+            إرسال وتحديث حالة الطلب 🚀
+        </button>
+    </div>
+
+    <form id="realStatusForm" action="/update-status/<%= request.req_id %>" method="POST" style="display: none;">
+        <input type="hidden" name="newStatus" id="input_status">
+        <input type="hidden" name="pharmacistName" id="input_phName">
+        <input type="hidden" name="clientNotes" id="input_notes">
+    </form>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="/requests-list" style="color: var(--blue-600); font-weight: 700; text-decoration: none;">← العودة لقائمة الطلبات</a>
+    </div>
+</div>
+
+<style>
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
+    }
+</style>
+
+<script>
+let selectedStatusValue = "";
+
+function selectStatus(btn, status) {
+    document.querySelectorAll('.btn-action-select').forEach(el => {
+        el.style.background = "transparent";
+        el.style.color = el.style.borderColor;
+    });
+
+    btn.style.background = btn.style.borderColor;
+    btn.style.color = "white";
+    selectedStatusValue = status;
+
+    document.getElementById('validationWarning').style.display = "none";
+}
+
+function validateAndSubmit() {
+    const name = document.getElementById('ph_name').value.trim();
+    const notes = document.getElementById('ph_notes').value.trim();
+    const warningBox = document.getElementById('validationWarning');
+
+    document.getElementById('ph_name').style.borderColor = "#cbd5e1";
+    warningBox.style.display = "none";
+
+    if (!selectedStatusValue) {
+        warningBox.textContent = "⚠️ يرجى اختيار 'طريقة الصرف' أولاً.";
+        warningBox.style.display = "block";
+        return;
+    }
+
+    if (!name) {
+        warningBox.textContent = "⚠️ يرجى إدخال 'اسم الصيدلي المسؤول' قبل الإرسال.";
+        warningBox.style.display = "block";
+        document.getElementById('ph_name').style.borderColor = "#ef4444";
+        return;
+    }
+
+    document.getElementById('input_status').value = selectedStatusValue;
+    document.getElementById('input_phName').value = name;
+    document.getElementById('input_notes').value = notes;
+
+    document.getElementById('realStatusForm').submit();
+}
+</script>
+
+<%- include('partials/footer') %>

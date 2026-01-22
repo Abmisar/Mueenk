@@ -1,0 +1,70 @@
+<%- include('partials/header') %>
+
+<div class="main-card" style="max-width: 1000px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="margin: 0; color: var(--blue-900);">سجل الطلبات المكتملة (الأرشيف)</h2>
+        <span style="background: #dcfce7; color: #166534; padding: 5px 15px; border-radius: 50px; font-weight: bold; font-size: 14px;">
+            <%= requests.length %> طلبات مؤرشفة
+        </span>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: right;">
+            <thead>
+                <tr style="border-bottom: 2px solid #f1f5f9; color: var(--blue-900);">
+                    <th style="padding: 15px;">رقم الطلب</th>
+                    <th style="padding: 15px;">المريض</th>
+                    <th style="padding: 15px;">تاريخ الإغلاق</th>
+                    <th style="padding: 15px;">الحالة النهائية</th>
+                    <th style="padding: 15px;">التفاصيل</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (requests.length > 0) { %>
+                    <% requests.forEach(req => { %>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 15px; font-weight: bold; color: var(--blue-600);"><%= req.req_id %></td>
+                            <td style="padding: 15px;">
+                                <%= req.full_name %><br>
+                                <small style="color: #64748b;">ملف: <%= req.medical_file %></small>
+                            </td>
+                            <td style="padding: 15px; font-size: 13px;">
+                                <%= new Date(req.created_at).toLocaleDateString('ar-SA') %>
+                            </td>
+                            <td style="padding: 15px;">
+                                <% 
+                                    let statusColor = "#10b981"; // أخضر للصرف
+                                    if (req.status === 'ملغى') statusColor = "#ef4444"; // أحمر للإلغاء
+                                    if (req.status === 'الوصفة منتهية') statusColor = "#64748b"; // رمادي للمنتهي
+                                %>
+                                <span style="background: <%= statusColor + '15' %>; color: <%= statusColor %>; padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: bold; border: 1px solid <%= statusColor + '30' %>;">
+                                    <%= req.status %>
+                                </span>
+                            </td>
+                            <td style="padding: 15px;">
+                                <a href="/request-details/<%= req.req_id %>" class="btn-outline" style="padding: 6px 12px; font-size: 12px; border-radius: 10px;">
+                                    مراجعة
+                                </a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" style="padding: 60px; text-align: center; color: #94a3b8;">
+                            <div style="font-size: 40px; margin-bottom: 10px;">📂</div>
+                            لا توجد طلبات مؤرشفة في السجل حتى الآن.
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="/requests-list" style="color: var(--blue-600); font-weight: 700; text-decoration: none;">
+            ← العودة للطلبات النشطة
+        </a>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

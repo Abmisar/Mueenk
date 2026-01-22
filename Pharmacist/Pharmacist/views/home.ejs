@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+
+<div class="main-card" style="text-align: center;">
+    <h1 style="color: var(--blue-900); font-size: clamp(24px, 5vw, 32px); margin-bottom: 10px;">مرحباً بك في مُعينك</h1>
+    <p style="color: #64748b; margin-bottom: 40px; line-height: 1.6;">منصتكم الموثوقة لتسهيل طلب وصرف الأدوية بكل سرعة وأمان.</p>
+    
+    <div class="btn-group" style="display: flex; flex-direction: column; gap: 15px;">
+        <a href="/create-request" class="btn-primary">إنشاء طلب جديد</a>
+        
+        <a href="/track-request" class="btn-outline" style="padding: 18px; border-radius: 20px; font-size: 18px; display: block; text-align: center;">
+            متابعة طلب سابق
+        </a>
+    </div>
+
+    <p style="margin-top: 25px; font-size: 13px; color: #94a3b8;">
+        🛡️ جميع البيانات مشفرة وتتم معالجتها من قبل الصيدلية المعتمدة.
+    </p>
+</div>
+
+<%- include('partials/footer') %>

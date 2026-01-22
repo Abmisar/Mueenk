@@ -1,0 +1,127 @@
+<%- include('partials/header') %>
+
+<div class="main-card" style="max-width: 900px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="color: var(--blue-900);">البحث عن بيانات مريض</h2>
+        <p>استعلم عن التاريخ الطبي والعناوين الوطنية المسجلة للمريض</p>
+    </div>
+
+    <form action="/patient-lookup" method="POST" style="display: flex; gap: 10px; margin-bottom: 40px;">
+        <input type="text" name="patientQuery" placeholder="أدخل رقم الملف الطبي أو رقم الهوية..." required style="margin-bottom: 0;">
+        <button type="submit" class="btn-primary" style="width: auto; margin-top: 0; padding: 0 30px;">استعلام</button>
+    </form>
+
+    <% if (locals.patientsList && patientsList.length > 0) { %>
+        <div style="animation: fadeIn 0.5s;">
+            <h3 style="color: var(--blue-900); margin-bottom: 20px; font-size: 16px;">تم العثور على (<%= patientsList.length %>) سجلات مرتبطة بهذا المريض:</h3>
+            
+            <% patientsList.forEach((patient, index) => { %>
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 25px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 40px; position: relative;">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px;">
+                        <div style="background: var(--blue-900); color: white; padding: 8px 25px; border-radius: 12px; font-weight: bold; font-size: 16px;">
+                            الطلب رقم: <%= patientsList.length - index %>
+                        </div>
+                        <span style="color: #64748b; font-size: 13px; font-weight: bold;">معرف الطلب: <%= patient.req_id %></span>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h4 style="margin: 0; font-size: 15px; color: var(--blue-900);">👤 البيانات الشخصية</h4>
+                        <span style="background: #dcfce7; color: #166534; padding: 5px 15px; border-radius: 50px; font-size: 12px; font-weight: bold;">ملف محفوظ ✅</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 25px;">
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 15px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">اسم المريض</p>
+                            <p style="margin: 0; font-weight: 800; color: var(--blue-900); font-size: 16px;"><%= patient.full_name %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 15px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">رقم الملف</p>
+                            <p style="margin: 0; font-weight: 800; color: var(--blue-900);"><%= patient.medical_file %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 15px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">رقم الهوية</p>
+                            <p style="margin: 0; font-weight: 800; color: var(--blue-900);"><%= patient.national_id %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 15px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">رقم الجوال</p>
+                            <p style="margin: 0; font-weight: 800; color: var(--blue-900);"><%= patient.phone %></p>
+                        </div>
+                    </div>
+
+                    <% if (patient.patient_notes) { %>
+                        <div style="margin-bottom: 25px; padding: 15px; background: #fff7ed; border: 1px solid #ffedd5; border-radius: 15px; border-right: 5px solid #ea580c;">
+                            <p style="margin: 0 0 5px 0; color: #9a3412; font-size: 12px; font-weight: bold;">📝 ملاحظة المريض الأصلية:</p>
+                            <p style="margin: 0; color: #431407; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;"><%= patient.patient_notes %></p>
+                        </div>
+                    <% } %>
+
+                    <h4 style="margin: 0 0 15px 0; font-size: 15px; color: var(--blue-900);">📍 العنوان الوطني المسجل</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 30px;">
+                        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">العنوان المختصر</p>
+                            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= patient.short_address %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">المدينة</p>
+                            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= patient.city %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">الحي</p>
+                            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= patient.district %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">الشارع</p>
+                            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= patient.street %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">رقم المبنى</p>
+                            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= patient.building_num %></p>
+                        </div>
+                        <div style="background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center;">
+                            <p style="margin: 0 0 4px; color: #64748b; font-size: 11px;">الرمز البريدي</p>
+                            <p style="margin: 0; font-weight: 700; color: var(--blue-900);"><%= patient.postal_code %></p>
+                        </div>
+                    </div>
+
+                    <% if (patient.pharmacist_notes) { %>
+                        <div style="padding: 25px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 20px; border-right: 6px solid #0369a1; margin-top: 20px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                                <span style="font-size: 24px;">💬</span>
+                                <h4 style="margin: 0; color: #0369a1; font-size: 18px; font-weight: 700;">الإجراء المتخذ وملاحظة الصيدلية:</h4>
+                            </div>
+                            
+                            <p style="color: #075985; font-size: 18px; line-height: 1.8; margin: 0 0 20px 0; font-weight: 500; background: white; padding: 15px; border-radius: 12px; border: 1px dashed #bae6fd; white-space: pre-wrap; word-wrap: break-word;">
+                                <%= patient.pharmacist_notes %>
+                            </p>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e0f2fe; padding-top: 15px;">
+                                <span style="font-size: 14px; color: #0c4a6e; font-weight: bold; background: #e0f2fe; padding: 5px 15px; border-radius: 8px;">
+                                    📍 طريقة الصرف: <span style="color: #0369a1; font-size: 16px;"><%= patient.status %></span>
+                                </span>
+                                <% if (patient.pharmacist_name) { %>
+                                    <span style="font-size: 11px; color: #64748b;">بواسطة الصيدلي: <%= patient.pharmacist_name %></span>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div style="text-align: center; padding: 25px; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 20px; color: #92400e; font-size: 16px; font-weight: 500;">
+                            ⏳ لا توجد إجراءات مسجلة لهذا الطلب حتى الآن.
+                        </div>
+                    <% } %>
+                    
+                </div>
+            <% }) %>
+
+            <p style="margin-top: 25px; font-size: 12px; color: #94a3b8; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 15px;">
+                ℹ️ تم تسجيل عملية استعلام التاريخ الطبي لهذا الملف في سجل الرقابة (Audit Log)
+            </p>
+        </div>
+    <% } else if (locals.errorMsg) { %>
+        <div style="background: #fff1f2; color: #e11d48; padding: 15px; border-radius: 15px; text-align: center; font-weight: bold; margin-top: 20px;">
+            <%= errorMsg %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>
